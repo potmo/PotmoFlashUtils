@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" version="3">
+  <includeClasses>
+    <classEntry path="com.potmo.util.color.XYZColor"/>
+    <classEntry path="com.potmo.util.color.HunterLabColor"/>
+    <classEntry path="com.potmo.util.color.CIELabColor"/>
+    <classEntry path="com.potmo.util.color.CIELuvColor"/>
+    <classEntry path="com.potmo.util.color.HSLColor"/>
+    <classEntry path="com.potmo.util.color.HSVColor"/>
+    <classEntry path="com.potmo.util.color.CMYKColor"/>
+    <classEntry path="com.potmo.util.color.CIELCHColor"/>
+    <classEntry path="com.potmo.util.color.ColorConverter"/>
+    <classEntry path="com.potmo.util.color.RGBColor"/>
+    <classEntry path="com.potmo.util.color.tristimulusReference.TristimulusReference"/>
+    <classEntry path="com.potmo.util.color.tristimulusReference.Illuminant"/>
+    <classEntry path="com.potmo.util.color.tristimulusReference.Observer"/>
+    <classEntry path="com.potmo.util.color.YXYColor"/>
+    <classEntry path="com.potmo.util.text.NYSIIS"/>
+    <classEntry path="com.potmo.util.text.Soundex"/>
+    <classEntry path="com.potmo.util.text.Levenshtein"/>
+    <classEntry path="com.potmo.util.image.RasterizationMapItem"/>
+    <classEntry path="com.potmo.util.logger.Logger"/>
+    <classEntry path="com.potmo.util.image.BitmapAnimation"/>
+    <classEntry path="com.potmo.util.image.BitmapAnimationCacheObject"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

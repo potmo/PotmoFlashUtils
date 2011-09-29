@@ -1,0 +1,18 @@
+<languageVersion : 1.0;>
+
+kernel SQRT
+<   namespace : "com.potmo.util.math.strictMath";
+    vendor : "Potmo inc.";
+    version : 1;
+    description : "Calculates the square root of a number";
+>
+{
+    input image4 src;
+    output pixel3 result;
+
+    void evaluatePixel()
+    {
+        float x = pixel1( sample(src, outCoord()) );
+        result = pixel3( sqrt(x), 0.0, 0.0);
+    }
+}

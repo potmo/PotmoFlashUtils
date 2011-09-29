@@ -1,0 +1,20 @@
+<languageVersion : 1.0;>
+
+kernel POW
+<   namespace : "com.potmo.util.math.strictMath";
+    vendor : "Potmo inc.";
+    version : 1;
+    description : "Calculates the nth power a number";
+>
+{
+    input image1 src0;
+    input image1 src1;
+    output pixel3 result;
+
+    void evaluatePixel()
+    {
+        float x = pixel1( sample(src0, outCoord()) );
+        float y = pixel1( sample(src1, outCoord()) );
+        result = pixel3( pow(x, y), 0.0, 0.0);
+    }
+}

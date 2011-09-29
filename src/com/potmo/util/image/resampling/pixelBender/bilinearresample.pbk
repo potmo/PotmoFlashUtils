@@ -1,0 +1,26 @@
+<languageVersion : 1.0;>
+
+kernel BilinearResample
+<   namespace : "com.brooksandrus.pixelbender";
+    vendor : "Brooks Andrus";
+    version : 1;
+    description : "Resizes an image using bilinear resampling. Constrains aspect ratio - divide Math.max( input.width / output.width, input.height / output.height ) and pass in to the scale parameter";
+>
+{
+    parameter float scale
+    <
+        minValue: 0.0;
+        maxValue: 1000.0;
+        defaultValue: 1.0;
+    >;
+    
+    input image4 src;
+    output pixel4 dst;
+
+    void
+    evaluatePixel()
+    {
+        // scale should be Math.max( src.width / output.width, src.height / output.height )
+        dst = sampleLinear( src, outCoord() * scale ); // bilinear scaling
+    }
+}

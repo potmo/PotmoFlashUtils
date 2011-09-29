@@ -1,0 +1,27 @@
+<languageVersion : 1.0;>
+
+kernel COMPAREIMAGES
+<   namespace : "com.potmo.util.image";
+    vendor : "Potmo inc.";
+    version : 1;
+    description : "Calculates the difference between each pixel in two images";
+>
+{
+    input image3 src0;
+    input image3 src1;
+    output pixel3 result;
+
+    void evaluatePixel()
+    {
+        pixel3 px0 = sample(src0, outCoord());
+        pixel3 px1 = sample(src1, outCoord());
+        
+        float r = abs(px0.r - px1.r);
+        float g = abs(px0.g - px1.g);
+        float b = abs(px0.b - px1.b);
+                
+        float res = sqrt(r*r + g*g + b*b)/441.67;
+                
+        result = pixel3(res, 0, 0);
+    }
+}

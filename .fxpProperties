@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="e4b2e899-0083-476c-a579-2d65bd4145a6" projectUUID="e4b2e899-0083-476c-a579-2d65bd4145a6" pureCatalystProject="false" sdkVersion="4.5.1" uuid="a296d537-1624-40c7-8748-2e9c4ae54695" version="15">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="a296d537-1624-40c7-8748-2e9c4ae54695"/>
+    <linked location="/assets/apparat-ersatz-1.0.RC8.swc" path="\assets\apparat-ersatz-1.0.RC8.swc" position="1" uuid="a296d537-1624-40c7-8748-2e9c4ae54695"/>
+  </swc>
+  <misc/>
+  <theme/>
+  <mxmlFormattingPrefs groupAttributesByState="true" maxLineWidth="100" mxmlAlignAttributes="true" mxmlAttributeOrder="id,userLabel,includeIn,excludeFrom,visible,x,y,z,left,right,top,bottom,width,height,minWidth,minHeight,maxWidth,maxHeight,label" mxmlKeepAttributeValuesOrganized="true"/>
+</fxpProperties>
