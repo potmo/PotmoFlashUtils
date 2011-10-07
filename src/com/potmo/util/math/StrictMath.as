@@ -385,6 +385,27 @@ package com.potmo.util.math
 
 
 		/**
+		 * Get the distance between two points in euclidian 2d space
+		 */
+		public static function getDist( x0:Number, y0:Number, x1:Number, y1:Number ):Number
+		{
+			var x:Number = x1 - x0;
+			var y:Number = y1 - y0;
+
+			return StrictMath.sqrt( x * x + y * y );
+		}
+
+
+		/**
+		 * Get the distance of 2d vector
+		 */
+		public static function get2DLength( x:Number, y:Number ):Number
+		{
+			return StrictMath.sqrt( x * x + y * y );
+		}
+
+
+		/**
 		 * Get the t value on a line segment that is closest to point
 		 * @param cx point x
 		 * @param cy point y
@@ -403,6 +424,36 @@ package com.potmo.util.math
 			return r;
 		}
 
+
+		/**
+		 * Calculate the dot product aka the scalar product
+		 */
+		public static function dotProduct2D( v1x:Number, v1y:Number, v2x:Number, v2y:Number ):Number
+		{
+			return v1x * v2x + v1y * v2y;
+		}
+
+
+		/**
+		 * First normalize the vectors and then calculate the dot product
+		 */
+		public static function dotProductNormalized2D( v1x:Number, v1y:Number, v2x:Number, v2y:Number ):Number
+		{
+			var v1Length:Number = get2DLength( v1x, v1y );
+			var v2Length:Number = get2DLength( v2x, v2y );
+			v1x /= v1Length;
+			v1y /= v1Length;
+			v2x /= v2Length;
+			v2y /= v2Length;
+
+			return v1x * v2x + v1y * v2y;
+		}
+
+
+		/*public static function getNormalizedScalarProjection2D( v1x:Number, v1y:Number, v2x:Number, v2y:Number ):Number
+		   {
+
+		   }*/
 
 		public static function degrees2rads( degrees:Number ):Number
 		{
