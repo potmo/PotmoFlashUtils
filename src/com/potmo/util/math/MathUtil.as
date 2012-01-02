@@ -13,6 +13,7 @@ package com.potmo.util.math
 		 * Convert degrees to radians
 		 * @return radians
 		 */
+		[Deprecated( replacement = "com.potmo.util.math.StrictMath.dagree2rad()" )]
 		public static function dagree2rad( degree:Number ):Number
 		{
 			return degree * PI_DIV_ONEEIGHTY;
@@ -23,6 +24,7 @@ package com.potmo.util.math
 		 * Convert radians to degrees
 		 * @return degrees
 		 */
+		[Deprecated( replacement = "com.potmo.util.math.StrictMath.rad2degree()" )]
 		public static function rad2degree( rad:Number ):Number
 		{
 			return rad * ONEEIGHTY_DIV_PI;
@@ -54,12 +56,14 @@ package com.potmo.util.math
 		}
 
 
+		[Deprecated( replacement = "com.potmo.util.math.StrictMath.getDist()" )]
 		public static function getDistance( x:Number, y:Number ):Number
 		{
 			return Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
 		}
 
 
+		[Deprecated( replacement = "com.potmo.util.math.StrictMath.getAngle()" )]
 		public static function getAngle( x:Number, y:Number ):Number
 		{
 			return Math.atan2( y, x );

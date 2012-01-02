@@ -361,10 +361,40 @@ package com.potmo.util.math
 
 
 		/**
-		 * Checks if two points are closer than max
+		 * Return the angle of a 3d vector in radians
 		 */
-		public static function isCloseEnough( x0:Number, y0:Number, x1:Number, y1:Number, max:Number ):Boolean
+		public static function getAngle( dirX:Number, dirY:Number ):Number
 		{
+			return atan2( dirX, dirY );
+		}
+
+
+		/**
+		 * Checks if two points are closer than max
+		 * @param x0
+		 * @param y0
+		 * @param x1
+		 * @param x1
+		 * @param max the maximum distance between the points
+		 * @param boxTestFirst do a box test for early exit first
+		 *
+		 */
+		public static function isCloseEnough( x0:Number, y0:Number, x1:Number, y1:Number, max:Number, boxTestFirst:Boolean = false ):Boolean
+		{
+			if ( boxTestFirst )
+			{
+				// early exit with box test firsst
+				if ( !( x0 > x1 - max && x1 + max > x0 ) )
+				{
+					return false;
+				}
+
+				if ( !( y0 > y1 - max && y1 + max > y0 ) )
+				{
+					return false;
+				}
+
+			}
 			var x:Number = x1 - x0;
 			var y:Number = y1 - y0;
 

@@ -19,6 +19,7 @@ package com.potmo.util.image
 	{
 
 		private static var tempTextField:TextField = new TextField();
+		private static var tempRect:Rectangle = new Rectangle();
 
 
 		public static function setDefaultTextFormatForBitmapTextBlit( format:TextFormat ):void
@@ -269,7 +270,7 @@ package com.potmo.util.image
 		 */
 		public static function efla( x:int, y:int, x2:int, y2:int, color:uint, bmd:BitmapData ):void
 		{
-			bmd.lock();
+
 			var shortLen:int = y2 - y;
 			var longLen:int = x2 - x;
 
@@ -304,7 +305,7 @@ package com.potmo.util.image
 					bmd.setPixel32( x + i, y + i * multDiff, color );
 				}
 			}
-			bmd.unlock();
+
 		}
 
 
@@ -336,6 +337,20 @@ package com.potmo.util.image
 			efla( x + width, y, x + width, y + height, color, bmd );
 			efla( x + width, y + height, x, y + height, color, bmd );
 			efla( x, y + height, x, y, color, bmd );
+		}
+
+
+		/**
+		 * Draws a filled rectangle with 32 bit color 0xAARRGGBB
+		 */
+		public static function drawFilledRectangle( x:int, y:int, width:int, height:int, color:uint, bmd:BitmapData ):void
+		{
+			tempRect.x = x;
+			tempRect.y = y;
+			tempRect.width = width;
+			tempRect.height = height;
+			bmd.fillRect( tempRect, color );
+
 		}
 
 
@@ -372,7 +387,7 @@ package com.potmo.util.image
 		/** Draw a circle with Bresenhams circle algorithm with 3d bit color 0xAARRGGBB**/
 		public static function drawCirlce( x0:int, y0:int, radius:int, color:int, bmd:BitmapData ):void
 		{
-			bmd.lock();
+
 			var f:int = 1 - radius;
 			var ddF_x:int = 1;
 			var ddF_y:int = -2 * radius;
@@ -407,7 +422,7 @@ package com.potmo.util.image
 				bmd.setPixel32( x0 + y, y0 - x, color );
 				bmd.setPixel32( x0 - y, y0 - x, color );
 			}
-			bmd.unlock();
+
 		}
 
 
