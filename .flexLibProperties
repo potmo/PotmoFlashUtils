@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="3">
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="com.potmo.util.color.XYZColor"/>
     <classEntry path="com.potmo.util.color.HunterLabColor"/>
@@ -22,6 +22,7 @@
     <classEntry path="com.potmo.util.logger.Logger"/>
     <classEntry path="com.potmo.util.image.BitmapAnimation"/>
     <classEntry path="com.potmo.util.image.BitmapAnimationCacheObject"/>
+    <classEntry path="com.potmo.util.containers.quadtree.QuadTree"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
