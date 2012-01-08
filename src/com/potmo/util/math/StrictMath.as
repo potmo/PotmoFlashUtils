@@ -383,13 +383,8 @@ package com.potmo.util.math
 		{
 			if ( boxTestFirst )
 			{
-				// early exit with box test firsst
-				if ( !( x0 > x1 - max && x1 + max > x0 ) )
-				{
-					return false;
-				}
-
-				if ( !( y0 > y1 - max && y1 + max > y0 ) )
+				// early exit with box test first
+				if ( x0 < x1 - max || x1 + max < x0 || y0 < y1 - max || y1 + max < y0 )
 				{
 					return false;
 				}
