@@ -521,7 +521,67 @@ package com.potmo.util.math
 		 */
 		public static function rectContainsRect( x0:Number, y0:Number, w0:Number, h0:Number, x1:Number, y1:Number, w1:Number, h1:Number ):Boolean
 		{
-			return x0 <= x1 && y0 <= y1 && x0 + w0 >= y1 + w1 && y0 + w0 >= y1 + h1;
+			//from java.awt.Rectangle.java
+			//http://www.dreamincode.net/forums/topic/221905-trying-to-find-whether-one-rectangle-contains-another-rectangle/
+
+			if ( ( w0 | h0 | w1 | h1 ) < 0 )
+			{
+				// At least one of the dimensions is negative...
+				return false;
+			}
+
+			// Note: if any dimension is zero, tests below must return false...
+			if ( x1 < x0 || y1 < y0 )
+			{
+				return false;
+			}
+
+			w0 += x0;
+			w1 += x1;
+
+			if ( w1 <= x1 )
+			{
+				// x1+w1 overflowed or w1 was zero, return false if...
+				// either original w0 or w1 was zero or
+				// x0+w0 did not overflow or
+				// the overflowed x0+w0 is smaller than the overflowed x1+w1
+				if ( w0 >= x0 || w1 > w0 )
+				{
+					return false;
+				}
+			}
+			else
+			{
+				// x1+w1 did not overflow and w1 was not zero, return false if...
+				// original w0 was zero or
+				// x0+w0 did not overflow and x0+w0 is smaller than x1+w1
+				if ( w0 >= x0 && w1 > w0 )
+				{
+					return false;
+				}
+			}
+
+			h0 += y0;
+			h1 += y1;
+
+			if ( h1 <= y1 )
+			{
+				if ( h0 >= y0 || h1 > h0 )
+				{
+					return false;
+				}
+			}
+			else
+			{
+				if ( h0 >= y0 && h1 > h0 )
+				{
+					return false;
+				}
+			}
+
+			return true;
+
+			//return x0 <= x1 && y0 <= y1 && x0 + w0 >= y1 + w1 && y0 + w0 >= y1 + h1;
 		}
 
 

@@ -22,7 +22,6 @@
     <classEntry path="com.potmo.util.logger.Logger"/>
     <classEntry path="com.potmo.util.image.BitmapAnimation"/>
     <classEntry path="com.potmo.util.image.BitmapAnimationCacheObject"/>
-    <classEntry path="com.potmo.util.containers.quadtree.QuadTree"/>
     <classEntry path="com.potmo.util.image.encoder.PNGEncoder"/>
     <classEntry path="com.potmo.util.image.encoder.JPGEncoder"/>
     <classEntry path="com.potmo.util.image.encoder.BitString"/>
