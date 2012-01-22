@@ -504,5 +504,36 @@ package com.potmo.util.math
 			return int( num ) + 1;
 		}
 
+
+		/**
+		 * Check if two rectangles intersect eachother
+		 */
+		public static function rectIntersectsRect( x0:Number, y0:Number, w0:Number, h0:Number, x1:Number, y1:Number, w1:Number, h1:Number ):Boolean
+		{
+			//http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+			return x0 < x1 + w1 && x0 + w0 > x1 && y0 < y1 + h1 && y0 + h0 > y1;
+
+		}
+
+
+		/**
+		 * Check if the first rectangle contains the second
+		 */
+		public static function rectContainsRect( x0:Number, y0:Number, w0:Number, h0:Number, x1:Number, y1:Number, w1:Number, h1:Number ):Boolean
+		{
+			return x0 <= x1 && y0 <= y1 && x0 + w0 >= y1 + w1 && y0 + w0 >= y1 + h1;
+		}
+
+
+		/**
+		 * Checks if rectangle contains point
+		 */
+		public static function rectContainsPoint( x:Number, y:Number, w:Number, h:Number, px:Number, py:Number ):Boolean
+		{
+			//http://www.dreamincode.net/forums/topic/131829-writing-own-contains-method-for-rectangles/
+			return ( ( x <= px && px <= x + w ) && ( y <= py && py <= y + h ) );
+
+		}
+
 	}
 }
