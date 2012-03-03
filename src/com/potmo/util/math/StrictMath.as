@@ -1,20 +1,21 @@
 package com.potmo.util.math
 {
-	import apparat.math.FastMath;
-
 	import flash.display.Shader;
 	import flash.display.ShaderJob;
 	import flash.display.ShaderPrecision;
 	import flash.events.Event;
+	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 
 	public class StrictMath
 	{
 
-		/*[Embed( source="../../../../../assets/pixelBender/math/math-sqrt.pbj", mimeType="application/octet-stream" )]
-		   private static const PB_CLASS_SQRT:Class;
-		   private static const PB_SHADER_SQRT:Shader = new Shader( new PB_CLASS_SQRT() );*/
+	/*	[Embed( source="../../../../../assets/pixelBender/math/math-sqrt.pbj", mimeType="application/octet-stream" )]
+		private static const PB_CLASS_SQRT:Class;
+		private static const PB_SHADER_SQRT:Shader = new Shader( new PB_CLASS_SQRT() );
+	*/
 
 		[Embed( source = "../../../../../assets/pixelBender/math/math-pow.pbj", mimeType = "application/octet-stream" )]
 		private static const PB_CLASS_POW:Class;
@@ -24,51 +25,25 @@ package com.potmo.util.math
 
 		public static const PI:Number = 3.141592653589793;
 		public static const TWO_PI:Number = PI << 1;
-
-		// initialize it
-		private static var a:* = FastMath.initMemory();
-
-
-		public static function sqrt( x:Number ):Number
+		
+		
+		public static function sqrt(n:Number):Number
 		{
-			// x^(1/2) == sqrt(x)
-			//return pow( x, 0.5 );
-			//return pixelBendIt( PB_SHADER_SQRT, x );
-			//return sqroot( x );
-			//return Math.sqrt( x );
-
-			return FastMath.sqrt( x );
+			//TODO: WARNING Uses Math.sqrt() but shouldnt
+			return Math.sqrt(n);
+			
+			//babylonian method			
+			/*var x:Number = n * 0.25;
+			var a:Number;
+			do
+			{
+				x = 0.5 * (x + n / x);
+				a = x * x - n;
+				if(a < 0) a = -a;
+			}
+			while(a > 0.0001)
+			return x;*/
 		}
-
-
-		public static function rsqrt( x:Number ):Number
-		{
-			return FastMath.rsqrt( x );
-		}
-
-
-		/*public static function sqroot( m:Number ):Number
-		   {
-		   var i:Number = 0;
-		   var x1:Number, x2:Number;
-
-		   while ( ( i * i ) <= m )
-		   {
-		   i += 0.5;
-		   }
-		   x1 = i;
-
-		   for ( var j:int = 0; j < 10; j++ )
-		   {
-		   x2 = m;
-		   x2 /= x1;
-		   x2 += x1;
-		   x2 /= 2;
-		   x1 = x2;
-		   }
-		   return x2;
-		   }
-		 */
 
 		public static function pow( x:Number, y:Number ):Number
 		{
@@ -76,6 +51,7 @@ package com.potmo.util.math
 
 			//return Math.pow( x, y );
 			return pixelBendIt2( PB_SHADER_POW, x, y );
+			
 		}
 
 
@@ -502,6 +478,12 @@ package com.potmo.util.math
 		public static function ceil( num:Number ):Number
 		{
 			return int( num ) + 1;
+		}
+		
+		public static function round(num:Number):Number
+		{
+			if (num > 0) return int(num +0.5) else return int(num-0.5);
+			
 		}
 
 
