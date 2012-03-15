@@ -25,6 +25,8 @@
     <classEntry path="com.potmo.util.image.encoder.PNGEncoder"/>
     <classEntry path="com.potmo.util.image.encoder.JPGEncoder"/>
     <classEntry path="com.potmo.util.image.encoder.BitString"/>
+    <classEntry path="com.potmo.util.image.RasterizedSequence"/>
+    <classEntry path="com.potmo.util.text.TextUtil"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
