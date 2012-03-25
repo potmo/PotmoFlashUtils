@@ -6,7 +6,6 @@ package com.potmo.util.logger
 
 		public static function log( str:String ):void
 		{
-
 			trace( " LOG: " + str + " [in " + getCallee() + "]" );
 		}
 

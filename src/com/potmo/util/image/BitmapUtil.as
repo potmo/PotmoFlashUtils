@@ -95,7 +95,7 @@ package com.potmo.util.image
 			var out:Vector.<BitmapData> = new Vector.<BitmapData>();
 			var enclosingRect:Rectangle = getEnclosingRect( clip );
 
-			for ( var frame:int = 1; frame < clip.totalFrames + 1; frame++ )
+			for ( var frame:int = 1; frame <= clip.totalFrames; frame++ )
 			{
 				out.push( rasterizeFrameOfMoviclip( clip, frame, enclosingRect ) );
 			}
@@ -197,7 +197,7 @@ package com.potmo.util.image
 
 			var buffer:BitmapData = new BitmapData( Math.ceil( rect.width ), Math.ceil( rect.height ), true, 0x00000000 );
 
-			var matrix:Matrix = new Matrix( 1, 0, 0, 1, Math.floor( -rect.x ), Math.floor( -rect.y ) );
+			var matrix:Matrix = new Matrix( 1, 0, 0, 1, Math.floor( -rect.x ) - 1, Math.floor( -rect.y ) - 1 );
 
 			buffer.draw( displayObject, matrix, null, null, null, true );
 
