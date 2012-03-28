@@ -1,5 +1,7 @@
 package com.potmo.util.image
 {
+	import com.potmo.util.logger.Logger;
+
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -57,6 +59,7 @@ package com.potmo.util.image
 
 			for each ( var label:FrameLabel in clipLabels )
 			{
+				Logger.log( "clip: " + movieClip.name + " label: " + label.name + " frameIndex: " + ( label.frame - 1 ) );
 				// FrameLabel.frame starts from 1 but arrays from 0
 				labels[ label.frame - 1 ] = label.name;
 			}

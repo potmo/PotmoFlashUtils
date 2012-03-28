@@ -1,5 +1,6 @@
 package com.potmo.util.image
 {
+	import com.potmo.util.logger.Logger;
 	import com.potmo.util.math.MathUtil;
 
 	import flash.display.BitmapData;
@@ -92,12 +93,15 @@ package com.potmo.util.image
 		 */
 		public static function rasterizeMovieClip( clip:MovieClip ):Vector.<BitmapData>
 		{
-			var out:Vector.<BitmapData> = new Vector.<BitmapData>();
+			var out:Vector.<BitmapData> = new Vector.<BitmapData>( clip.totalFrames, true );
 			var enclosingRect:Rectangle = getEnclosingRect( clip );
 
-			for ( var frame:int = 1; frame <= clip.totalFrames; frame++ )
+			var frames:int = clip.totalFrames;
+			var frame:int = frames + 1;
+
+			while ( --frame >= 1 )
 			{
-				out.push( rasterizeFrameOfMoviclip( clip, frame, enclosingRect ) );
+				out[ frame - 1 ] = rasterizeFrameOfMoviclip( clip, frame, enclosingRect );
 			}
 
 			return out;
@@ -171,9 +175,15 @@ package com.potmo.util.image
 		 */
 		private static function rasterizeFrameOfMoviclip( clip:MovieClip, frame:int, rect:Rectangle ):BitmapData
 		{
+			Logger.log( "clip: " + clip + " frame: " + frame );
+
+			var startFrame:int = clip.currentFrame;
 			clip.gotoAndStop( frame );
 
-			return rasterizeDisplayObject( clip, rect );
+			var raster:BitmapData = rasterizeDisplayObject( clip, rect );
+
+			clip.gotoAndStop( startFrame );
+			return raster;
 
 		}
 
@@ -208,6 +218,7 @@ package com.potmo.util.image
 		public static function getEnclosingRect( clip:MovieClip ):Rectangle
 		{
 
+			var startFrame:int = clip.currentFrame;
 			//Find the rect of the animation
 			var rect:Rectangle = new Rectangle( 0, 0, 0, 0 );
 
@@ -237,6 +248,7 @@ package com.potmo.util.image
 			rect.width = Math.ceil( rect.width );
 			rect.height = Math.ceil( rect.height );
 
+			clip.gotoAndStop( startFrame );
 			return rect;
 		}
 
