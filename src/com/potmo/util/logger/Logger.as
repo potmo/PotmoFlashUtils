@@ -3,22 +3,36 @@ package com.potmo.util.logger
 
 	public class Logger
 	{
+		private static var _logTarget:ILogTarget = new TraceLogTarget();
+
 
 		public static function log( str:String ):void
 		{
-			trace( " LOG: " + str + " [in " + getCallee() + "]" );
+			_logTarget.debug( str + " [in " + getCallee() + "]" );
+		}
+
+
+		public static function info( str:String ):void
+		{
+			_logTarget.info( str + " [in " + getCallee() + "]" );
 		}
 
 
 		public static function warn( str:String ):void
 		{
-			trace( "WARN: " + str + " [in " + getCallee() + "]" );
+			_logTarget.warning( str + " [in " + getCallee() + "]" );
 		}
 
 
 		public static function error( str:String ):void
 		{
-			trace( " ERR:" + str + " [in " + getCallee() + "]" );
+			_logTarget.error( str + " [in " + getCallee() + "]" );
+		}
+
+
+		public static function setLogTarget( target:ILogTarget ):void
+		{
+			_logTarget = target;
 		}
 
 

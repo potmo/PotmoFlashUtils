@@ -85,7 +85,6 @@ package com.potmo.util.input
 			_isDown = true;
 			deviceMove( x, y );
 			_lastDownPos = pos;
-			Logger.log( "Mouse down: " + _pos );
 		}
 
 
@@ -94,7 +93,6 @@ package com.potmo.util.input
 			_isDown = false;
 			deviceMove( x, y );
 			_lastUpPos = pos;
-			Logger.log( "Mouse up: " + _pos );
 		}
 
 

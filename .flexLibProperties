@@ -27,6 +27,8 @@
     <classEntry path="com.potmo.util.image.encoder.BitString"/>
     <classEntry path="com.potmo.util.image.RasterizedSequence"/>
     <classEntry path="com.potmo.util.text.TextUtil"/>
+    <classEntry path="com.potmo.util.logger.ILogTarget"/>
+    <classEntry path="com.potmo.util.logger.TraceLogTarget"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
