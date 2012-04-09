@@ -334,6 +334,22 @@ package com.potmo.util.math
 		{
 			return StrictMath.max( min, StrictMath.min( max, value ) );
 		}
+		
+		/**
+		 * Get next power of two
+		 */
+		public static function getNextPowerOfTwo( n:Number ):Number
+		{
+			var out:Number = 2.0;
+			
+			while ( out < n )
+			{
+				// pow 2
+				out <<= 1;
+			}
+			
+			return out;
+		}
 
 
 		/**

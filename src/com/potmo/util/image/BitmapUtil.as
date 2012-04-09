@@ -81,9 +81,25 @@ package com.potmo.util.image
 		}
 
 
+		/**
+		 * Draws a bitmapdata at another bitmapdata with an offset on the target
+		 */
 		public static function blit( target:BitmapData, source:BitmapData, xOffset:int = 0, yOffset:int = 0 ):void
 		{
 			target.copyPixels( source, source.rect, new Point( xOffset, yOffset ), null, null, true );
+		}
+
+
+		/**
+		 * Creates a new BitmapData resized to the smallest size only considering visible pixels
+		 */
+		public static function trimTransparentPixels( image:BitmapData ):BitmapData
+		{
+
+			var bounds:Rectangle = image.getColorBoundsRect( 0xFF000000, 0x00000000, false );
+			var output:BitmapData = new BitmapData( bounds.width, bounds.height, true );
+			output.copyPixels( image, bounds, new Point( 0, 0 ) );
+			return output;
 		}
 
 
