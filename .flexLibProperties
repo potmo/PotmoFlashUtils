@@ -30,6 +30,7 @@
     <classEntry path="com.potmo.util.logger.ILogTarget"/>
     <classEntry path="com.potmo.util.logger.TraceLogTarget"/>
     <classEntry path="com.potmo.util.packing.MaxRectBinPacker"/>
+    <classEntry path="com.potmo.util.packing.PackRectangle"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

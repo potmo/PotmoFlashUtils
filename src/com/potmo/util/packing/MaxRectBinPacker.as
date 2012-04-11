@@ -15,10 +15,12 @@
  */
 package com.potmo.util.packing
 {
+	import com.potmo.util.logger.Logger;
+
 	import flash.display.Shape;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 
 	public class MaxRectBinPacker extends EventDispatcher
@@ -32,14 +34,14 @@ package com.potmo.util.packing
 		public var timeLimit:int = 25;
 		public var allowFlip:Boolean = false;
 
-		public var usedRectangles:Vector.<Rectangle>;
-		public var freeRectangles:Vector.<Rectangle>;
+		public var usedRectangles:Vector.<PackRectangle>;
+		public var freeRectangles:Vector.<PackRectangle>;
 
 		protected var binWidth:Number = 0;
 		protected var binHeight:Number = 0;
 
 		protected var enterFrameProvider:Shape;
-		protected var tmpRects:Vector.<Rectangle>;
+		protected var tmpRects:Vector.<PackRectangle>;
 		protected var tmpMethod:uint;
 
 
@@ -54,36 +56,36 @@ package com.potmo.util.packing
 		{
 			binWidth = width;
 			binHeight = height;
-			usedRectangles = new Vector.<Rectangle>();
-			freeRectangles = new Vector.<Rectangle>();
-			freeRectangles.push( new Rectangle( 0, 0, width, height ) );
+			usedRectangles = new Vector.<PackRectangle>();
+			freeRectangles = new Vector.<PackRectangle>();
+			freeRectangles.push( new PackRectangle( -1, 0, 0, width, height ) );
 		}
 
 
-		public function insert( width:Number, height:Number, method:uint ):Rectangle
+		public function insert( width:Number, height:Number, method:uint ):PackRectangle
 		{
 			if ( enterFrameProvider.hasEventListener( Event.ENTER_FRAME ) )
 			{
 				throw( new Error( "Bulk insert in progress." ) );
 			}
-			var newNode:Rectangle;
+			var newNode:PackRectangle;
 
 			switch ( method )
 			{
 				case METHOD_RECT_BEST_SHORT_SIDE_FIT:
-					newNode = findPositionForNewNodeBestShortSideFit( width, height );
+					newNode = findPositionForNewNodeBestShortSideFit( width, height, null, 0 );
 					break;
 				case METHOD_RECT_BOTTOM_LEFT_RULE:
-					newNode = findPositionForNewNodeBottomLeft( width, height );
+					newNode = findPositionForNewNodeBottomLeft( width, height, null, 0 );
 					break;
 				case METHOD_RECT_CONTACT_POINT_RULE:
-					newNode = findPositionForNewNodeContactPoint( width, height );
+					newNode = findPositionForNewNodeContactPoint( width, height, null, 0 );
 					break;
 				case METHOD_RECT_BEST_LONG_SIDE_FIT:
-					newNode = findPositionForNewNodeBestLongSideFit( width, height );
+					newNode = findPositionForNewNodeBestLongSideFit( width, height, null, 0 );
 					break;
 				case METHOD_RECT_BEST_AREA_FIT:
-					newNode = findPositionForNewNodeBestAreaFit( width, height );
+					newNode = findPositionForNewNodeBestAreaFit( width, height, null, 0 );
 					break;
 				default:
 					throw( new Error( "Invalid method." ) );
@@ -111,7 +113,27 @@ package com.potmo.util.packing
 		}
 
 
-		public function insertBulk( rects:Vector.<Rectangle>, method:uint ):void
+		public function insertMany( rects:Vector.<PackRectangle>, method:uint ):Vector.<PackRectangle>
+		{
+			if ( enterFrameProvider.hasEventListener( Event.ENTER_FRAME ) )
+			{
+				throw( new Error( "Bulk insert in progress." ) );
+			}
+
+			tmpRects = rects;
+			tmpMethod = method;
+
+			// do forever
+			timeLimit = int.MAX_VALUE;
+
+			insertBulkWorker( null );
+
+			return usedRectangles;
+
+		}
+
+
+		public function insertAsync( rects:Vector.<PackRectangle>, method:uint ):void
 		{
 			if ( enterFrameProvider.hasEventListener( Event.ENTER_FRAME ) )
 			{
@@ -124,7 +146,7 @@ package com.potmo.util.packing
 		}
 
 
-		public function insertBulkWorker( event:Event ):void
+		private function insertBulkWorker( event:Event ):void
 		{
 			var t:int = getTimer();
 
@@ -134,12 +156,12 @@ package com.potmo.util.packing
 				{
 					var bestScore:Score = new Score();
 					var bestRectIndex:int = -1;
-					var bestNode:Rectangle = rectFactory();
+					var bestNode:PackRectangle = rectFactory( -1 );
 
 					for ( var i:uint = 0; i < tmpRects.length; ++i )
 					{
 						var score:Score = new Score();
-						var newNode:Rectangle = scoreRect( tmpRects[ i ].width, tmpRects[ i ].height, tmpMethod, score );
+						var newNode:PackRectangle = scoreRect( tmpRects[ i ].width, tmpRects[ i ].height, tmpMethod, score, tmpRects[ i ].getId() );
 
 						if ( score.score1 < bestScore.score1 || ( score.score1 == bestScore.score1 && score.score2 < bestScore.score2 ) )
 						{
@@ -153,7 +175,15 @@ package com.potmo.util.packing
 					if ( bestRectIndex == -1 )
 					{
 						// Rect didn't fit, break out of the loop and terminate
-						break;
+						if ( event == null )
+						{
+							throw new Error( "Rectangle did not fit" );
+						}
+						else
+						{
+							dispatchEvent( new ErrorEvent( ErrorEvent.ERROR, true, false, "Rectangle did not fit" ) );
+							break;
+						}
 					}
 					placeRect( bestNode );
 					tmpRects.splice( bestRectIndex, 1 );
@@ -161,41 +191,42 @@ package com.potmo.util.packing
 				else
 				{
 					// time limit exceeded, break out of the function, wait for next enterframe
-					trace( ( getTimer() - t ) + "ms" );
+					Logger.log( "Packing progress: " + ( getTimer() - t ) + "ms" + " : " + tmpRects.length + " to go" );
 					dispatchEvent( new Event( "progress" ) );
 					return;
 				}
 			}
+			Logger.log( "Done packing" );
 			tmpRects = null;
 			enterFrameProvider.removeEventListener( Event.ENTER_FRAME, insertBulkWorker );
 			dispatchEvent( new Event( "complete" ) );
 		}
 
 
-		protected function scoreRect( width:Number, height:Number, method:uint, score:Score ):Rectangle
+		protected function scoreRect( width:Number, height:Number, method:uint, score:Score, id:int ):PackRectangle
 		{
-			var newNode:Rectangle = rectFactory();
+			var newNode:PackRectangle = rectFactory( id );
 			score.score1 = Number.MAX_VALUE;
 			score.score2 = Number.MAX_VALUE;
 
 			switch ( method )
 			{
 				case METHOD_RECT_BEST_SHORT_SIDE_FIT:
-					newNode = findPositionForNewNodeBestShortSideFit( width, height, score );
+					newNode = findPositionForNewNodeBestShortSideFit( width, height, score, id );
 					break;
 				case METHOD_RECT_BOTTOM_LEFT_RULE:
-					newNode = findPositionForNewNodeBottomLeft( width, height, score );
+					newNode = findPositionForNewNodeBottomLeft( width, height, score, id );
 					break;
 				case METHOD_RECT_CONTACT_POINT_RULE:
-					newNode = findPositionForNewNodeContactPoint( width, height, score );
+					newNode = findPositionForNewNodeContactPoint( width, height, score, id );
 					// Reverse since we are minimizing, but for contact point score bigger is better.
 					score.score1 = -score.score1;
 					break;
 				case METHOD_RECT_BEST_LONG_SIDE_FIT:
-					newNode = findPositionForNewNodeBestLongSideFit( width, height, score );
+					newNode = findPositionForNewNodeBestLongSideFit( width, height, score, id );
 					break;
 				case METHOD_RECT_BEST_AREA_FIT:
-					newNode = findPositionForNewNodeBestAreaFit( width, height, score );
+					newNode = findPositionForNewNodeBestAreaFit( width, height, score, id );
 					break;
 				default:
 					throw( new Error( "Invalid method." ) );
@@ -212,7 +243,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function placeRect( node:Rectangle ):void
+		protected function placeRect( node:PackRectangle ):void
 		{
 			var numRectanglesToProcess:uint = freeRectangles.length;
 
@@ -230,14 +261,14 @@ package com.potmo.util.packing
 		}
 
 
-		protected function findPositionForNewNodeBestShortSideFit( width:Number, height:Number, score:Score = null ):Rectangle
+		protected function findPositionForNewNodeBestShortSideFit( width:Number, height:Number, score:Score, id:int ):PackRectangle
 		{
 			if ( score == null )
 			{
 				score = new Score();
 			}
 			score.score1 = Number.MAX_VALUE;
-			var bestNode:Rectangle = rectFactory();
+			var bestNode:PackRectangle = rectFactory( id );
 
 			for ( var i:uint = 0; i < freeRectangles.length; ++i )
 			{
@@ -286,7 +317,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function findPositionForNewNodeBottomLeft( width:Number, height:Number, score:Score = null ):Rectangle
+		protected function findPositionForNewNodeBottomLeft( width:Number, height:Number, score:Score, id:int ):PackRectangle
 		{
 			if ( score == null )
 			{
@@ -294,7 +325,7 @@ package com.potmo.util.packing
 			}
 			score.score1 = Number.MAX_VALUE;
 			var topSideY:Number;
-			var bestNode:Rectangle = rectFactory();
+			var bestNode:PackRectangle = rectFactory( id );
 
 			for ( var i:uint = 0; i < freeRectangles.length; ++i )
 			{
@@ -336,7 +367,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function findPositionForNewNodeContactPoint( width:Number, height:Number, score:Score = null ):Rectangle
+		protected function findPositionForNewNodeContactPoint( width:Number, height:Number, score:Score, id:int ):PackRectangle
 		{
 			if ( score == null )
 			{
@@ -344,14 +375,14 @@ package com.potmo.util.packing
 			}
 			score.score1 = -1;
 			var bestContactScore:Number;
-			var bestNode:Rectangle = rectFactory();
+			var bestNode:PackRectangle = rectFactory( id );
 
 			for ( var i:uint = 0; i < freeRectangles.length; ++i )
 			{
 				// Try to place the rectangle in upright (non-flipped) orientation.
 				if ( freeRectangles[ i ].width >= width && freeRectangles[ i ].height >= height )
 				{
-					bestContactScore = contactPointScoreNode( freeRectangles[ i ].x, freeRectangles[ i ].y, width, height );
+					bestContactScore = contactPointScoreNode( freeRectangles[ i ].x, freeRectangles[ i ].y, width, height, -1 );
 
 					if ( bestContactScore > score.score1 )
 					{
@@ -367,7 +398,7 @@ package com.potmo.util.packing
 				{
 					if ( freeRectangles[ i ].width >= height && freeRectangles[ i ].height >= width )
 					{
-						bestContactScore = contactPointScoreNode( freeRectangles[ i ].x, freeRectangles[ i ].y, width, height );
+						bestContactScore = contactPointScoreNode( freeRectangles[ i ].x, freeRectangles[ i ].y, width, height, -1 );
 
 						if ( bestContactScore > score.score1 )
 						{
@@ -384,7 +415,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function findPositionForNewNodeBestLongSideFit( width:Number, height:Number, score:Score = null ):Rectangle
+		protected function findPositionForNewNodeBestLongSideFit( width:Number, height:Number, score:Score, id:int ):PackRectangle
 		{
 			if ( score == null )
 			{
@@ -393,7 +424,7 @@ package com.potmo.util.packing
 			score.score2 = Number.MAX_VALUE;
 			var shortSideFit:Number, longSideFit:Number;
 			var leftoverHoriz:Number, leftoverVert:Number;
-			var bestNode:Rectangle = rectFactory();
+			var bestNode:PackRectangle = rectFactory( id );
 
 			for ( var i:uint = 0; i < freeRectangles.length; ++i )
 			{
@@ -441,7 +472,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function findPositionForNewNodeBestAreaFit( width:Number, height:Number, score:Score = null ):Rectangle
+		protected function findPositionForNewNodeBestAreaFit( width:Number, height:Number, score:Score, id:int ):PackRectangle
 		{
 			if ( score == null )
 			{
@@ -451,7 +482,7 @@ package com.potmo.util.packing
 			var areaFit:Number;
 			var shortSideFit:Number;
 			var leftoverHoriz:Number, leftoverVert:Number;
-			var bestNode:Rectangle = rectFactory();
+			var bestNode:PackRectangle = rectFactory( id );
 
 			for ( var i:uint = 0; i < freeRectangles.length; ++i )
 			{
@@ -499,7 +530,7 @@ package com.potmo.util.packing
 		}
 
 
-		protected function contactPointScoreNode( x:Number, y:Number, width:Number, height:Number ):Number
+		protected function contactPointScoreNode( x:Number, y:Number, width:Number, height:Number, id:int ):Number
 		{
 			var score:Number = 0;
 
@@ -541,9 +572,9 @@ package com.potmo.util.packing
 		}
 
 
-		protected function splitFreeNode( freeNode:Rectangle, usedNode:Rectangle ):Boolean
+		protected function splitFreeNode( freeNode:PackRectangle, usedNode:PackRectangle ):Boolean
 		{
-			var newNode:Rectangle;
+			var newNode:PackRectangle;
 
 			// Test with SAT if the rectangles even intersect.
 			if ( usedNode.x >= freeNode.x + freeNode.width || usedNode.x + usedNode.width <= freeNode.x || usedNode.y >= freeNode.y + freeNode.height || usedNode.y + usedNode.height <= freeNode.y )
@@ -618,9 +649,9 @@ package com.potmo.util.packing
 		}
 
 
-		protected function rectFactory():Rectangle
+		protected function rectFactory( id:int ):PackRectangle
 		{
-			return new Rectangle();
+			return new PackRectangle( id, 0, 0, 0, 0 );
 		}
 	}
 }
