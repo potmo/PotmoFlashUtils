@@ -195,6 +195,9 @@ package com.potmo.util.math
 			// http://lab.polygonal.de/wp-content/articles/fast_trig/fastTrig.as
 			//
 
+			return Math.sin(angleRadians);
+			/*
+			THIS ONE DOES NOT SEEM TO WORK PROPERLY
 			while ( angleRadians > TWO_PI )
 			{
 				angleRadians -= TWO_PI;
@@ -209,7 +212,7 @@ package com.potmo.util.math
 			var sign:Number = ( 1.0 - ( int( angleRadians > 0.0 ) << 1 ) );
 			angleRadians = ( angleRadians * ( 1.27323954 + sign * 0.405284735 * angleRadians ) );
 			sign = ( 1.0 - ( int( angleRadians < 0.0 ) << 1 ) );
-			return angleRadians * ( sign * 0.225 * ( angleRadians - sign ) + 1.0 );
+			return angleRadians * ( sign * 0.225 * ( angleRadians - sign ) + 1.0 );*/
 		}
 
 
@@ -229,6 +232,10 @@ package com.potmo.util.math
 			// http://lab.polygonal.de/wp-content/articles/fast_trig/fastTrig.as
 			//
 
+			return Math.cos(angleRadians);
+			/*
+			
+			THIS ONE DOES NOT SEEM TO WORK PROPERLY
 			while ( angleRadians > TWO_PI )
 			{
 				angleRadians -= TWO_PI;
@@ -246,7 +253,7 @@ package com.potmo.util.math
 			var sign:Number = ( 1.0 - ( int( angleRadians > 0.0 ) << 1 ) );
 			angleRadians = ( angleRadians * ( 1.27323954 + sign * 0.405284735 * angleRadians ) );
 			sign = ( 1.0 - ( int( angleRadians < 0.0 ) << 1 ) );
-			return angleRadians * ( sign * 0.225 * ( angleRadians - sign ) + 1.0 );
+			return angleRadians * ( sign * 0.225 * ( angleRadians - sign ) + 1.0 );*/
 		}
 
 
